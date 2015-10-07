@@ -50,7 +50,7 @@ def setup():
                                     'handlers': ['console'],
                                     'level': 'WARN'},
                                 'loggers': {
-                                    "django.db": {"level": "DEBUG"}}})
+                                    "django.db": {"level": "WARN"}}})
     django.setup()
 
 
