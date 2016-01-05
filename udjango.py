@@ -1,4 +1,8 @@
+import sys
+
 import django
+from django.apps import apps
+from django.apps.config import AppConfig
 from django.conf import settings
 from django.core.management import color
 from django.db import connection, models
@@ -51,6 +55,8 @@ def setup():
                                     'level': 'WARN'},
                                 'loggers': {
                                     "django.db": {"level": "WARN"}}})
+    app_config = AppConfig(NAME, sys.modules['__main__'])
+    apps.populate([app_config])
     django.setup()
 
 
