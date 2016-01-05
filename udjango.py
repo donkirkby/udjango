@@ -1,3 +1,4 @@
+from datetime import datetime
 import sys
 
 import django
@@ -13,21 +14,69 @@ NAME = 'udjango'
 def main():
     setup()
 
-    class Person(models.Model):
+    class Blog(models.Model):
         class Meta:
             app_label = NAME  # This line is needed for EVERY model
+        name = models.CharField(max_length=100)
+        tagline = models.TextField()
 
-        first_name = models.CharField(max_length=30)
-        last_name = models.CharField(max_length=30)
+        def __str__(self):              # __unicode__ on Python 2
+            return self.name
 
-    syncdb(Person)
+    class Author(models.Model):
+        class Meta:
+            app_label = NAME  # This line is needed for EVERY model
+        name = models.CharField(max_length=50)
+        email = models.EmailField()
 
-    p1 = Person(first_name='Jimmy', last_name='Jones')
-    p1.save()
-    p2 = Person(first_name='Bob', last_name='Brown')
-    p2.save()
+        def __str__(self):              # __unicode__ on Python 2
+            return self.name
 
-    print ', '.join([p.first_name for p in Person.objects.all()])
+    class Entry(models.Model):
+        class Meta:
+            app_label = NAME  # This line is needed for EVERY model
+        blog = models.ForeignKey(Blog, related_name='entries')
+        headline = models.CharField(max_length=255)
+        body_text = models.TextField()
+        pub_date = models.DateField()
+        mod_date = models.DateField()
+        authors = models.ManyToManyField(Author)
+        n_comments = models.IntegerField()
+        n_pingbacks = models.IntegerField()
+        rating = models.IntegerField()
+
+        def __str__(self):              # __unicode__ on Python 2
+            return self.headline
+
+    syncdb(Blog)
+    syncdb(Author)
+    syncdb(Entry)
+
+    a = Author(name='Jimmy')
+    a.save()
+    b = Blog(name="Jimmy's Jottings")
+    b.save()
+    b2 = Blog(name="Joey's Jottings")
+    b2.save()
+    e = Entry(blog=b,
+              headline='Hello, World!',
+              pub_date=datetime.now(),
+              mod_date=datetime.now(),
+              n_comments=0,
+              n_pingbacks=0,
+              rating=3)
+    e.save()
+    assert e == b.entries.first()
+
+    b3 = Blog.objects.get(entries__headline__contains='Hell')
+    assert b == b3
+
+    b4 = Blog.objects.get(entries__isnull=False)
+    assert b == b4
+
+    b5 = Blog.objects.get(entries__isnull=True)
+    assert b2 == b5
+    print('Done.')
 
 
 def setup():
