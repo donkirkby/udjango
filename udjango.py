@@ -1,3 +1,4 @@
+# Tested with Django 1.9.2
 from datetime import datetime
 import sys
 
@@ -5,8 +6,7 @@ import django
 from django.apps import apps
 from django.apps.config import AppConfig
 from django.conf import settings
-from django.core.management import color
-from django.db import connection, models
+from django.db import connections, models, DEFAULT_DB_ALIAS
 
 NAME = 'udjango'
 
@@ -85,7 +85,7 @@ def setup():
         pass  # wipe the database
     settings.configure(DEBUG=True,
                        DATABASES={
-                            'default': {
+                            DEFAULT_DB_ALIAS: {
                                 'ENGINE': 'django.db.backends.sqlite3',
                                 'NAME': DB_FILE}},
                        LOGGING={'version': 1,
@@ -112,14 +112,10 @@ def setup():
 def syncdb(model):
     """ Standard syncdb expects models to be in reliable locations.
 
-    Based on https://code.djangoproject.com/wiki/DynamicModels#Syncdb
+    Based on https://github.com/django/django/blob/1.9.3/django/core/management/commands/migrate.py#L285
     """
-    # disable terminal colors in the sql statements
-    style = color.no_style()
-
-    cursor = connection.cursor()
-    statements, _pending = connection.creation.sql_create_model(model, style)
-    for sql in statements:
-        cursor.execute(sql)
+    connection = connections[DEFAULT_DB_ALIAS]
+    with connection.schema_editor() as editor:
+        editor.create_model(model)
 
 main()
