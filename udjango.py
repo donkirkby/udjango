@@ -6,6 +6,7 @@ from django.apps import apps
 from django.apps.config import AppConfig
 from django.conf import settings
 from django.db import connections, models, DEFAULT_DB_ALIAS
+from django.db.models.base import ModelBase
 
 NAME = 'udjango'
 
@@ -14,9 +15,6 @@ def main():
     setup()
 
     class Person(models.Model):
-        class Meta:
-            app_label = NAME  # This line is needed for EVERY model
-
         first_name = models.CharField(max_length=30)
         last_name = models.CharField(max_length=30)
 
@@ -60,6 +58,16 @@ def setup():
     app_config = AppConfig(NAME, sys.modules['__main__'])
     apps.populate([app_config])
     django.setup()
+    original_new_func = ModelBase.__new__
+
+    @staticmethod
+    def patched_new(cls, name, bases, attrs):
+        if 'Meta' not in attrs:
+            class Meta:
+                app_label = NAME
+            attrs['Meta'] = Meta
+        return original_new_func(cls, name, bases, attrs)
+    ModelBase.__new__ = patched_new
 
 
 def syncdb(model):
