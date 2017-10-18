@@ -25,7 +25,7 @@ def main():
     p2 = Person(first_name='Bob', last_name='Brown')
     p2.save()
 
-    print ', '.join([p.first_name for p in Person.objects.all()])
+    print(', '.join([p.first_name for p in Person.objects.all()]))
 
 
 def setup():
