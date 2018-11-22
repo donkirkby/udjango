@@ -25,14 +25,16 @@ import sys
 
 import django
 from django.conf import settings
-from django.db import models
-from django.contrib import admin
 from django.conf.urls import url, include
+from django.contrib.auth import get_user_model
+from django.contrib import admin
+from django.core.management import call_command
+from django.core.wsgi import get_wsgi_application
+from django.db import models
 from django.db.models.base import ModelBase
 from django.http import HttpResponse
-from django.core.wsgi import get_wsgi_application
-from django.core.management import execute_from_command_line
 
+WIPE_DATABASE = True
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_FILE = os.path.join(BASE_DIR, 'udjango.db')
 
@@ -80,7 +82,8 @@ def main():
 
     def index(request):
         return HttpResponse(
-            "Hello, Django! <a href='admin'>Web</a> or <a href='api'>API</a>?")
+            "Hello, Django! <a href='admin'>Web</a> or <a href='api'>API</a>? "
+            "Login as user 'admin', password 'admin'.")
 
     urlpatterns.extend([
         url(r'^admin/', admin.site.urls),
@@ -91,7 +94,13 @@ def main():
     ])
 
     if __name__ == "__main__":
-        execute_from_command_line(sys.argv)
+        if WIPE_DATABASE or not os.path.exists(DB_FILE):
+            with open(DB_FILE, 'w'):
+                pass
+            call_command('makemigrations', APP_LABEL)
+            call_command('migrate')
+            get_user_model().objects.create_superuser('admin', '', 'admin')
+        call_command('runserver')
     else:
         get_wsgi_application()
 
