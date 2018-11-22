@@ -1,4 +1,5 @@
-# Tested with Django 1.9.2
+# Tested with Django 1.11.15 and Python 3.6.
+import logging
 import sys
 
 import django
@@ -9,10 +10,12 @@ from django.db import connections, models, DEFAULT_DB_ALIAS
 from django.db.models.base import ModelBase
 
 NAME = 'udjango'
+DB_FILE = NAME + '.db'
 
 
 def main():
     setup()
+    logger = logging.getLogger(__name__)
 
     class Person(models.Model):
         first_name = models.CharField(max_length=30)
@@ -25,11 +28,10 @@ def main():
     p2 = Person(first_name='Bob', last_name='Brown')
     p2.save()
 
-    print(', '.join([p.first_name for p in Person.objects.all()]))
+    logger.info(', '.join([p.first_name for p in Person.objects.all()]))
 
 
 def setup():
-    DB_FILE = NAME + '.db'
     with open(DB_FILE, 'w'):
         pass  # wipe the database
     settings.configure(
@@ -52,9 +54,9 @@ def setup():
                         'formatter': 'debug'}},
                  'root': {
                     'handlers': ['console'],
-                    'level': 'WARN'},
+                    'level': 'INFO'},
                  'loggers': {
-                    "django.db": {"level": "WARN"}}})
+                    "django.db": {"level": "DEBUG"}}})
     app_config = AppConfig(NAME, sys.modules['__main__'])
     apps.populate([app_config])
     django.setup()
@@ -79,5 +81,6 @@ def syncdb(model):
     connection = connections[DEFAULT_DB_ALIAS]
     with connection.schema_editor() as editor:
         editor.create_model(model)
+
 
 main()
