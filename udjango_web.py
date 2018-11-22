@@ -22,9 +22,19 @@ Tested with Django 1.11.15 and Python 3.6.
 
 import os
 import sys
+
+import django
 from django.conf import settings
+from django.db import models
+from django.contrib import admin
+from django.conf.urls import url, include
+from django.db.models.base import ModelBase
+from django.http import HttpResponse
+from django.core.wsgi import get_wsgi_application
+from django.core.management import execute_from_command_line
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, 'udjango.db')
 
 # the current folder name will also be our app
 APP_LABEL = os.path.basename(BASE_DIR)
@@ -32,52 +42,45 @@ urlpatterns = []
 
 
 def main():
-    from django.db import models
-    from django.contrib import admin
     setup()
-    # Create your models here.
 
+    from rest_framework import routers
+    from rest_framework import serializers
+    from rest_framework import viewsets
+
+    # Create your models here.
     class Author(models.Model):
         name = models.CharField(max_length=200)
-        class Meta:
-            app_label = APP_LABEL
+
+        def __str__(self):
+            return self.name
 
     class Book(models.Model):
         author = models.ForeignKey(Author, related_name='books')
         title = models.CharField(max_length=400)
-        class Meta:
-            app_label = APP_LABEL
+
+        def __str__(self):
+            return self.title
 
     admin.site.register(Book)
     admin.site.register(Author)
     admin.autodiscover()
-
-
-    from rest_framework import serializers
 
     class BookSerializer(serializers.ModelSerializer):
         class Meta:
             model = Book
             fields = '__all__'
 
-    from rest_framework import viewsets
-
     class BooksViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = Book.objects.all()
         serializer_class = BookSerializer
-
-
-
-    from django.conf.urls import url, include
-    from rest_framework import routers
-    from django.http import HttpResponse
-    from django.contrib import admin
 
     router = routers.DefaultRouter()
     router.register(r'books', BooksViewSet)
 
     def index(request):
-        return HttpResponse("Hello")
+        return HttpResponse(
+            "Hello, Django! <a href='admin'>Web</a> or <a href='api'>API</a>?")
 
     urlpatterns.extend([
         url(r'^admin/', admin.site.urls),
@@ -87,9 +90,7 @@ def main():
                                    namespace='rest_framework'))
     ])
 
-    from django.core.wsgi import get_wsgi_application
     if __name__ == "__main__":
-        from django.core.management import execute_from_command_line
         execute_from_command_line(sys.argv)
     else:
         get_wsgi_application()
@@ -99,9 +100,7 @@ def setup():
     sys.path[0] = os.path.dirname(BASE_DIR)
 
     settings.configure(
-        DEBUG=os.environ.get('DEBUG', 'on') == 'on',
-        SECRET_KEY=os.environ.get('SECRET_KEY', os.urandom(32)),
-        ALLOWED_HOSTS=os.environ.get('ALLOWED_HOSTS', 'localhost').split(','),
+        DEBUG=True,
         ROOT_URLCONF=__name__,
         MIDDLEWARE=[
             'django.middleware.security.SecurityMiddleware',
@@ -133,7 +132,7 @@ def setup():
         TEMPLATES=[
             {
                 'BACKEND': 'django.template.backends.django.DjangoTemplates',
-                'DIRS': [os.path.join(BASE_DIR, "templates"),],
+                'DIRS': [os.path.join(BASE_DIR, "templates")],
                 'APP_DIRS': True,
                 'OPTIONS': {
                     'context_processors': [
@@ -150,19 +149,27 @@ def setup():
         DATABASES={
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+                'NAME': DB_FILE,
                 }
             },
         REST_FRAMEWORK={
             'DEFAULT_PERMISSION_CLASSES': [
                 'rest_framework.permissions.IsAdminUser',
             ],
-            'PAGE_SIZE': 10
         }
     )
 
-    import django
     django.setup()
+    original_new_func = ModelBase.__new__
+
+    @staticmethod
+    def patched_new(cls, name, bases, attrs):
+        if 'Meta' not in attrs:
+            class Meta:
+                app_label = APP_LABEL
+            attrs['Meta'] = Meta
+        return original_new_func(cls, name, bases, attrs)
+    ModelBase.__new__ = patched_new
 
 
 main()
