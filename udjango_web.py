@@ -31,6 +31,70 @@ APP_LABEL = os.path.basename(BASE_DIR)
 urlpatterns = []
 
 
+def main():
+    from django.db import models
+    from django.contrib import admin
+    setup()
+    # Create your models here.
+
+    class Author(models.Model):
+        name = models.CharField(max_length=200)
+        class Meta:
+            app_label = APP_LABEL
+
+    class Book(models.Model):
+        author = models.ForeignKey(Author, related_name='books')
+        title = models.CharField(max_length=400)
+        class Meta:
+            app_label = APP_LABEL
+
+    admin.site.register(Book)
+    admin.site.register(Author)
+    admin.autodiscover()
+
+
+    from rest_framework import serializers
+
+    class BookSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Book
+            fields = '__all__'
+
+    from rest_framework import viewsets
+
+    class BooksViewSet(viewsets.ReadOnlyModelViewSet):
+        queryset = Book.objects.all()
+        serializer_class = BookSerializer
+
+
+
+    from django.conf.urls import url, include
+    from rest_framework import routers
+    from django.http import HttpResponse
+    from django.contrib import admin
+
+    router = routers.DefaultRouter()
+    router.register(r'books', BooksViewSet)
+
+    def index(request):
+        return HttpResponse("Hello")
+
+    urlpatterns.extend([
+        url(r'^admin/', admin.site.urls),
+        url(r'^$', index, name='homepage'),
+        url(r'^api/', include(router.urls)),
+        url(r'^api-auth/', include('rest_framework.urls',
+                                   namespace='rest_framework'))
+    ])
+
+    from django.core.wsgi import get_wsgi_application
+    if __name__ == "__main__":
+        from django.core.management import execute_from_command_line
+        execute_from_command_line(sys.argv)
+    else:
+        get_wsgi_application()
+
+
 def setup():
     sys.path[0] = os.path.dirname(BASE_DIR)
 
@@ -99,70 +163,6 @@ def setup():
 
     import django
     django.setup()
-
-
-def main():
-    from django.db import models
-    from django.contrib import admin
-    setup()
-    # Create your models here.
-
-    class Author(models.Model):
-        name = models.CharField(max_length=200)
-        class Meta:
-            app_label = APP_LABEL
-
-    class Book(models.Model):
-        author = models.ForeignKey(Author, related_name='books')
-        title = models.CharField(max_length=400)
-        class Meta:
-            app_label = APP_LABEL
-
-    admin.site.register(Book)
-    admin.site.register(Author)
-    admin.autodiscover()
-
-
-    from rest_framework import serializers
-
-    class BookSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Book
-            fields = '__all__'
-
-    from rest_framework import viewsets
-
-    class BooksViewSet(viewsets.ReadOnlyModelViewSet):
-        queryset = Book.objects.all()
-        serializer_class = BookSerializer
-
-
-
-    from django.conf.urls import url, include
-    from rest_framework import routers
-    from django.http import HttpResponse
-    from django.contrib import admin
-
-    router = routers.DefaultRouter()
-    router.register(r'books', BooksViewSet)
-
-    def index(request):
-        return HttpResponse("Hello")
-
-    urlpatterns.extend([
-        url(r'^admin/', admin.site.urls),
-        url(r'^$', index, name='homepage'),
-        url(r'^api/', include(router.urls)),
-        url(r'^api-auth/', include('rest_framework.urls',
-                                   namespace='rest_framework'))
-    ])
-
-    from django.core.wsgi import get_wsgi_application
-    if __name__ == "__main__":
-        from django.core.management import execute_from_command_line
-        execute_from_command_line(sys.argv)
-    else:
-        get_wsgi_application()
 
 
 main()
