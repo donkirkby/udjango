@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-""" A Django web app in a single file.
+""" A Django web app and unit tests in a single file.
 
 Based on Nsukami's blog post:
 https://mlvin.xyz/django-single-file-project.html
 
 To get it running, copy it into a directory named udjango:
 $ pip install django
-$ python udjango_web.py
+$ python udjango_test.py
 
-Then browse to http://localhost:8000 and log in to the web site.
-Add some authors and books, then browse to http://localhost:8000/api
+Change the DJANGO_COMMAND to runserver to switch back to web server.
 
 Tested with Django 1.11.15 and Python 3.6.
 """
@@ -30,17 +29,40 @@ from django.core.wsgi import get_wsgi_application
 from django.db import models
 from django.db.models.base import ModelBase
 from django.http import HttpResponse
+from django.test import TestCase, Client
+from django.urls import reverse
 
 WIPE_DATABASE = True
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_FILE = os.path.join(BASE_DIR, 'udjango.db')
+DJANGO_COMMAND = 'test'  # 'test' or 'runserver'
 
 # the current folder name will also be our app
 APP_LABEL = os.path.basename(BASE_DIR)
 urlpatterns = []
+Author = Book = None
+
+
+class Tests(TestCase):
+    def test_post(self):
+        author = Author.objects.create(name='Jim')
+        user = get_user_model().objects.create_superuser('admin', '', 'admin')
+        client = Client()
+        client.force_login(user)
+        expected_title = 'My New Book'
+
+        response = client.post(reverse('admin:udjango_book_add'),
+                               dict(title=expected_title,
+                                    author=author.id))
+        if response.status_code != 302:
+            self.assertEqual([], response.context['errors'])
+
+        new_book = Book.objects.last()
+        self.assertEqual(expected_title, new_book.title)
 
 
 def main():
+    global Author, Book
     setup()
 
     from rest_framework import routers
@@ -91,13 +113,16 @@ def main():
     ])
 
     if __name__ == "__main__":
-        if WIPE_DATABASE or not os.path.exists(DB_FILE):
-            with open(DB_FILE, 'w'):
-                pass
-            call_command('makemigrations', APP_LABEL)
-            call_command('migrate')
-            get_user_model().objects.create_superuser('admin', '', 'admin')
-        call_command('runserver')
+        if DJANGO_COMMAND == 'test':
+            call_command('test', '__main__.Tests')
+        else:
+            if WIPE_DATABASE or not os.path.exists(DB_FILE):
+                with open(DB_FILE, 'w'):
+                    pass
+                call_command('makemigrations', APP_LABEL)
+                call_command('migrate')
+                get_user_model().objects.create_superuser('admin', '', 'admin')
+            call_command(DJANGO_COMMAND)
     else:
         get_wsgi_application()
 
