@@ -1,5 +1,7 @@
 This is a minimal, but runnable Django app called 𝜇Django.
 
+[![Build Status]][travis-ci.org]
+
 My goal was to create a runnable Django snippet that included a model.
 
 I found several useful resources, but most no longer work under Django 1.11:
@@ -20,3 +22,5 @@ Later, I found Nsukami's [blog post][nsukami] that included a web server, so I m
 [olifante]: http://olifante.blogs.com/covil/2010/04/minimal-django.html
 [maniacs]: http://softwaremaniacs.org/blog/2011/01/07/django-micro-framework/en/
 [nsukami]: https://mlvin.xyz/django-single-file-project.html
+[Build Status]: https://travis-ci.org/donkirkby/udjango.svg?branch=master
+[travis-ci.org]: https://travis-ci.org/donkirkby/udjango
