@@ -191,6 +191,8 @@ def setup():
     )
 
     django.setup()
+    app_config = django.apps.apps.app_configs[APP_LABEL]
+    app_config.models_module = app_config.models
     original_new_func = ModelBase.__new__
 
     @staticmethod
