@@ -13,7 +13,7 @@ $ python udjango_web.py
 Then browse to http://localhost:8000 and log in to the web site.
 Add some authors and books, then browse to http://localhost:8000/api
 
-Tested with Django 1.11.15 and Python 3.6.
+Tested with Django 2.2 and Python 3.6.
 """
 
 
@@ -55,7 +55,9 @@ def main():
             return self.name
 
     class Book(models.Model):
-        author = models.ForeignKey(Author, related_name='books')
+        author = models.ForeignKey(Author,
+                                   related_name='books',
+                                   on_delete=models.CASCADE)
         title = models.CharField(max_length=400)
 
         def __str__(self):
