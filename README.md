@@ -13,7 +13,7 @@ I found several useful resources, but most no longer work under Django 1.11:
 * posts on Django in one file that just don't include models:
     [Olifante][olifante] and [software maniacs][maniacs]
 
-Later, I found Nsukami's [blog post][nsukami] that included a web server, so I merged in those features and automated the migrations.
+Later, I found Nsukami's blog post (no longer on line) that included a web server, so I merged in those features and automated the migrations.
 
 [so]: http://stackoverflow.com/q/1297873/4794
 [wiki]: https://code.djangoproject.com/wiki/DynamicModels#Syncdb
@@ -21,6 +21,5 @@ Later, I found Nsukami's [blog post][nsukami] that included a web server, so I m
 [blog]: http://fahhem.com/blog/2011/10/django-models-without-apps-or-everything-django-truly-in-a-single-file/
 [olifante]: http://olifante.blogs.com/covil/2010/04/minimal-django.html
 [maniacs]: http://softwaremaniacs.org/blog/2011/01/07/django-micro-framework/en/
-[nsukami]: https://mlvin.xyz/django-single-file-project.html
 [Build Status]: https://travis-ci.org/donkirkby/udjango.svg?branch=master
 [travis-ci.org]: https://travis-ci.org/donkirkby/udjango
