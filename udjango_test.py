@@ -3,8 +3,7 @@
 
 """ A Django web app and unit tests in a single file.
 
-Based on Nsukami's blog post:
-https://mlvin.xyz/django-single-file-project.html
+Based on Nsukami's blog post (no longer on line).
 
 To get it running, copy it into a directory named udjango:
 $ pip install django
@@ -12,7 +11,7 @@ $ python udjango_test.py
 
 Change the DJANGO_COMMAND to runserver to switch back to web server.
 
-Tested with Django 2.2 and Python 3.6.
+Tested with Django 3.0 and Python 3.8.
 """
 
 

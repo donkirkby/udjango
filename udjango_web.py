@@ -3,17 +3,16 @@
 
 """ A Django web app in a single file.
 
-Based on Nsukami's blog post:
-https://mlvin.xyz/django-single-file-project.html
+Based on Nsukami's blog post (no longer on line).
 
 To get it running, copy it into a directory named udjango:
-$ pip install django
+$ pip install django django-rest-framework
 $ python udjango_web.py
 
 Then browse to http://localhost:8000 and log in to the web site.
 Add some authors and books, then browse to http://localhost:8000/api
 
-Tested with Django 2.2 and Python 3.6.
+Tested with Django 3.0 and Python 3.8.
 """
 
 
