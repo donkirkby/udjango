@@ -24,6 +24,7 @@ from django.conf.urls import url, include
 from django.contrib.auth import get_user_model
 from django.contrib import admin
 from django.core.management import call_command
+from django.core.management.utils import get_random_secret_key
 from django.core.wsgi import get_wsgi_application
 from django.db import models
 from django.db.models.base import ModelBase
@@ -161,6 +162,8 @@ def setup():
         STATIC_ROOT=os.path.join(BASE_DIR, "static_root"),
         MEDIA_ROOT=os.path.join(BASE_DIR, "media"),
         MEDIA_URL='/media/',
+        SECRET_KEY=get_random_secret_key(),
+        DEFAULT_AUTO_FIELD='django.db.models.AutoField',
         TEMPLATES=[
             {
                 'BACKEND': 'django.template.backends.django.DjangoTemplates',

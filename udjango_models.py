@@ -1,4 +1,4 @@
-# Tested with Django 3.0 and Python 3.8.
+# Tested with Django 3.2 and Python 3.8.
 import logging
 import sys
 
