@@ -20,7 +20,7 @@ import sys
 
 import django
 from django.conf import settings
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.contrib.auth import get_user_model
 from django.contrib import admin
 from django.core.management import call_command
@@ -30,7 +30,7 @@ from django.db import models
 from django.db.models.base import ModelBase
 from django.http import HttpResponse
 from django.test import TestCase, Client
-from django.urls import reverse
+from django.urls import reverse, re_path
 
 WIPE_DATABASE = True
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -107,10 +107,10 @@ def main():
             "Login as user 'admin', password 'admin'.")
 
     urlpatterns.extend([
-        url(r'^admin/', admin.site.urls),
-        url(r'^$', index, name='homepage'),
-        url(r'^api/', include(router.urls)),
-        url(r'^api-auth/', include('rest_framework.urls',
+        re_path(r'^admin/', admin.site.urls),
+        re_path(r'^$', index, name='homepage'),
+        re_path(r'^api/', include(router.urls)),
+        re_path(r'^api-auth/', include('rest_framework.urls',
                                    namespace='rest_framework'))
     ])
 
