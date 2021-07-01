@@ -25,4 +25,4 @@ jobs:
         pipenv install
     - name: Test
       run: |
-        python udjango_test.py
+        pipenv run python udjango_test.py
