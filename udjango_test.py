@@ -132,6 +132,11 @@ def main():
 def setup():
     sys.path[0] = os.path.dirname(BASE_DIR)
 
+    static_path = os.path.join(BASE_DIR, "static")
+    try:
+        os.mkdir(static_path)
+    except FileExistsError:
+        pass
     settings.configure(
         DEBUG=True,
         ROOT_URLCONF=__name__,
@@ -157,7 +162,7 @@ def setup():
             ],
         STATIC_URL='/static/',
         STATICFILES_DIRS=[
-            os.path.join(BASE_DIR, "static"),
+            static_path,
         ],
         STATIC_ROOT=os.path.join(BASE_DIR, "static_root"),
         MEDIA_ROOT=os.path.join(BASE_DIR, "media"),
