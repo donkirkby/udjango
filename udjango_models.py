@@ -1,4 +1,13 @@
-# Tested with Django 3.2 and Python 3.8.
+""" Django models in a single, runnable file.
+
+Based on Nsukami's blog post: https://nskm.xyz/posts/dsfp/
+
+To get it running, copy it into a directory named udjango:
+$ pip install django
+$ python udjango_models.py
+
+Tested with Django 4.0 and Python 3.9.
+"""
 import logging
 import sys
 

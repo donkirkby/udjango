@@ -1,17 +1,14 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-
 """ A Django web app and unit tests in a single file.
 
-Based on Nsukami's blog post (no longer on line).
+Based on Nsukami's blog post: https://nskm.xyz/posts/dsfp/
 
 To get it running, copy it into a directory named udjango:
-$ pip install django
+$ pip install django django-rest-framework
 $ python udjango_test.py
 
 Change the DJANGO_COMMAND to runserver to switch back to web server.
 
-Tested with Django 3.0 and Python 3.8.
+Tested with Django 4.0 and Python 3.9.
 """
 
 
