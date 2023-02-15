@@ -13,7 +13,7 @@ I found several useful resources, but most no longer work under Django 1.11:
 * posts on Django in one file that just don't include models:
     [Olifante][olifante] and [software maniacs][maniacs]
 
-Later, I found Nsukami's blog post (no longer on line) that included a web server, so I merged in those features and automated the migrations.
+Later, I found [Nsukami's blog post] that included a web server, so I merged in those features and automated the migrations.
 
 There might be some useful ideas in [Adam Johnson's blog].
 
@@ -26,3 +26,4 @@ There might be some useful ideas in [Adam Johnson's blog].
 [Build Status]: https://travis-ci.org/donkirkby/udjango.svg?branch=master
 [travis-ci.org]: https://travis-ci.org/donkirkby/udjango
 [Adam Johnson's blog]: https://adamj.eu/tech/2020/10/15/a-single-file-rest-api-in-django/
+[Nsukami's blog post]: https://nskm.xyz/posts/dsfp/
