@@ -8,7 +8,7 @@ $ python udjango_test.py
 
 Change the DJANGO_COMMAND to runserver to switch back to web server.
 
-Tested with Django 4.0 and Python 3.9.
+Tested with Django 4.2 and Python 3.10.
 """
 
 

@@ -9,7 +9,7 @@ $ python udjango_web.py
 Then browse to http://localhost:8000 and log in to the web site.
 Add some authors and books, then browse to http://localhost:8000/api
 
-Tested with Django 4.0 and Python 3.9.
+Tested with Django 4.2 and Python 3.10.
 """
 
 

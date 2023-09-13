@@ -6,7 +6,7 @@ To get it running, copy it into a directory named udjango:
 $ pip install django
 $ python udjango_models.py
 
-Tested with Django 4.0 and Python 3.9.
+Tested with Django 4.2 and Python 3.10.
 """
 import logging
 import sys

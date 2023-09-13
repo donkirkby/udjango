@@ -1,0 +1,19 @@
+{
+	"name": "udjango",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"postCreateCommand": ["pipenv", "install"],
+	"customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash (2)",
+                "terminal.integrated.profiles.linux": {
+					"bash (2)": {
+						"path": "/home/codespace/.python/current/bin/pipenv-shell"
+					}
+				}
+            }
+        }
+    }
+}

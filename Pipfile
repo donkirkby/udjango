@@ -11,4 +11,4 @@ pytz = "*"  # Missing dependency from djangorestframework 3.12.4
 djangorestframework = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
